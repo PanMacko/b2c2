@@ -28,6 +28,7 @@ After(async () => {
 //Scenario 1
 Given('the user is on the home page {string}', async function (url) {
 });
+
 async function hoverOverSubscribeTab() {
     const subscribeTab = page.locator('aside[class="subscribe_btn"] div[class="navmenu-2 subs"]');
     await expect(subscribeTab).toBeVisible();
