@@ -11,5 +11,5 @@ This repository contains three Cucumber-style automated tests written in Playwri
 3. In terminal ``` npm install ```
 4. In terminal ``` npx playwright install ``` (During installation choose "Javascript")
 5. In terminal ```npm install @cucumber/cucumber --save-dev```
-6. To execute the tests, in terminal ``` npx cucumber-js --tags @All_Tabs_Testing ``` to execute first test or ``` npx cucumber-js --tags @subscribe ``` to execute second test
+6. To execute the tests, in terminal ``` npx cucumber-js --tags "@All_Tabs_Testing" ``` to execute first test or ``` npx cucumber-js --tags "@subscribe" ``` to execute second test ``` npx cucumber-js --tags "@closeButton" ``` to execute third test
 
