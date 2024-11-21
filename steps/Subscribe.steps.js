@@ -3,31 +3,18 @@ const { expect } = require('@playwright/test');
 const { chromium } = require('playwright');
 const HomePage = require('../pageObject/HomePage');
 
+let browser, context, page, homePage
 
-let browser;
-let context;
-let page;
-let homePage;
-
-Before(async () => {
-    browser = await chromium.launch({headless: false})
+//Scenario 1
+Given('the user is on the home page {string}', async function (url) {
+    browser = await chromium.launch({ headless: false })
     context = await browser.newContext()
     page = await context.newPage()
     homePage = new HomePage(page)
     await homePage.open()
-    await homePage.verifyURL("https://www.b2c2.com/");
+    await homePage.verifyURL(url)
 });
 
-After(async () => {
-    await context.close();
-    await browser.close();
-});
-
-
-
-//Scenario 1
-Given('the user is on the home page {string}', async function (url) {
-});
 
 async function hoverOverSubscribeTab() {
     const subscribeTab = page.locator('aside[class="subscribe_btn"] div[class="navmenu-2 subs"]');
@@ -68,6 +55,11 @@ Then('the popup contains a visible reCAPTCHA widget', async function () {
 
 //Scenario 2
 When('the user enters {string} into the email field', async function(email) {
+    browser = await chromium.launch({ headless: false })
+    context = await browser.newContext()
+    page = await context.newPage()
+    homePage = new HomePage(page)
+    await homePage.open()
     await hoverOverSubscribeTab()
     const emailInput = page.locator('body > div:nth-child(8) > div:nth-child(2) > nav:nth-child(2) > div:nth-child(2) > div:nth-child(1) > aside:nth-child(7) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > form:nth-child(1) > div:nth-child(4) > input:nth-child(1)')
     await emailInput.fill(email)
@@ -93,4 +85,17 @@ When('the user clicks the "Subscribe" button without check reCAPTCHA', async fun
 
 Then('the user sees a message {string}', async function(expectedMessage) {
     expect(this.dialogMessage).toBe(expectedMessage)
+});
+
+After(async function () {
+    
+    if (page) {
+        await page.close();
+    }
+    if (context) {
+        await context.close();
+    }
+    if (browser) {
+        await browser.close();
+    }
 });

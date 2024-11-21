@@ -1,27 +1,15 @@
-const { Before, After, Given, When, Then } = require('@cucumber/cucumber');
+const { Before, After, Given, When, Then, BeforeAll } = require('@cucumber/cucumber');
 const { expect } = require('@playwright/test');
 const { chromium } = require('playwright');
 const HomePage = require('../pageObject/HomePage');
 
-let browser;
-let context;
-let page;
-let homePage;
+let browser, context, page, homePage;
 
-Before(async () => {
-    browser = await chromium.launch({headless: false});
+
+Given('the user is on the homepage {string}', { timeout: 10000 }, async function (url) {
+    browser = await chromium.launch({ headless: false });
     context = await browser.newContext();
     page = await context.newPage();
-    this.page = page;
-});
-
-After(async () => {
-    await context.close();
-    await browser.close();
-});
-
-Given('the user is on the homepage {string}', async function (url) {
-
     homePage = new HomePage(page);
     await homePage.open();
     await homePage.verifyURL(url);
@@ -72,3 +60,16 @@ When('the user returns to the homepage by clicking the logo', async function () 
 Then('Then the user is redirected to the page {string}', async function(expectedUrl){
     await expect(page).toHaveURL(expectedUrl)
 })
+
+After(async function () {
+    
+    if (page) {
+        await page.close();
+    }
+    if (context) {
+        await context.close();
+    }
+    if (browser) {
+        await browser.close();
+    }
+});

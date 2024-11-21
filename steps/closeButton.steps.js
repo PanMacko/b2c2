@@ -6,29 +6,17 @@ const { chromium } = require('playwright');
 const HomePage = require('../pageObject/HomePage');
 
 
-let browser;
-let context;
-let page;
-let homePage;
+let browser, context, page, homePage
 
-Before(async () => {
-    browser = await chromium.launch({headless: false})
-    context = await browser.newContext()
-    page = await context.newPage()
-    this.page=page
-    
-});
-
-After(async () => {
-    await context.close();
-    await browser.close();
-});
 
 Given('the user is on the main page {string}', async function (url) {
 
-    homePage = new HomePage(page);
-    await homePage.open();
-    await homePage.verifyURL(url);
+    browser = await chromium.launch({ headless: false })
+    context = await browser.newContext()
+    page = await context.newPage()
+    homePage = new HomePage(page)
+    await homePage.open()
+    await homePage.verifyURL(url)
 });
 
 When('the user hovers the mouse over the "SUBSCRIBE" window', async function(){
@@ -52,3 +40,16 @@ Then('the subscription window closes', async function(){
     const window = page.locator('.flex_div.vertical.left.subs')
     await expect(window).not.toBeVisible()
 })
+
+After(async function () {
+    
+    if (page) {
+        await page.close();
+    }
+    if (context) {
+        await context.close();
+    }
+    if (browser) {
+        await browser.close();
+    }
+});
